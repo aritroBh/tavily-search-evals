@@ -183,6 +183,33 @@ class SeaWebClient:
         return docs
 
 
+class WikiClient:
+    """Local Wikipedia FTS index (wiki.db, 7.2M articles) via wiki_search's
+    canonical ranking. Lower-bound config: BM25 + canonical re-rank only, no
+    semantic re-rank pass. Measures what a Wikipedia base layer would buy."""
+
+    BODY_CHARS = 4000
+
+    def __init__(self) -> None:
+        import sys as _sys
+        _sys.path.insert(0, "/Users/aritro/Downloads/Start up")
+        import wiki_search  # noqa: PLC0415
+        self._search = wiki_search.search_canonical
+        self._db = "/Users/aritro/Downloads/Start up/wiki.db"
+
+    def search(self, query: str) -> list[tuple[str, str]]:
+        try:
+            rows = self._search(query, db=self._db, limit=MAX_DOCS, full=True)
+        except Exception:
+            return []
+        docs = []
+        for row in rows:
+            title, body = row[1], (row[3] if len(row) > 3 else "") or ""
+            url = "https://en.wikipedia.org/wiki/" + title.replace(" ", "_")
+            docs.append((url, body[: self.BODY_CHARS]))
+        return docs
+
+
 def format_docs(docs: list[tuple[str, str]]) -> str:
     # byte-identical to base_handler._format_search_results_for_prompt
     return "\n".join(
@@ -209,6 +236,7 @@ def claude(prompt: str, model: str) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--provider", default="seaweb", choices=["seaweb", "wiki"])
     ap.add_argument("--slice", default="geography", choices=["geography", "all"])
     ap.add_argument("--mode", default="parity", choices=["parity", "honest"])
     ap.add_argument("--limit", type=int, default=None)
@@ -236,7 +264,7 @@ def main() -> int:
 
     grader = grader_template()
     compose_prompt = PARITY_PROMPT + (HONEST_SUFFIX if args.mode == "honest" else "")
-    client = SeaWebClient()
+    client = SeaWebClient() if args.provider == "seaweb" else WikiClient()
     write_lock = threading.Lock()
 
     def compose_and_grade(item: dict, docs: list[tuple[str, str]]) -> None:
@@ -291,7 +319,8 @@ def main() -> int:
         "accuracy_given_attempted": round(acc_att, 4),
         "overall_correct": round(overall, 4),
         "f_score": round(f1, 4),
-        "search": "seaweb prod anon MCP, top10",
+        "search": ("seaweb prod anon MCP, top10" if args.provider == "seaweb"
+                   else "local wiki.db FTS canonical (no semantic re-rank), top10"),
         "composer_grader_model": args.claude_model,
         "composer_prompt": "upstream PostProcessor verbatim" + (" + abstention rule" if args.mode == "honest" else ""),
     }
