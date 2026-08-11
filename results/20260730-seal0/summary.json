@@ -1,0 +1,53 @@
+{
+  "dataset": "SealQA seal_0/test (Seal-0, hardest slice)",
+  "dataset_source": "hf datasets vtllms/sealqa @ 62efe18f229ce5b1e4e2a7b056c5dd2fe53223f6, config seal_0, split test",
+  "dataset_local_file": "tavily-search-evals/datasets/seal-0.parquet",
+  "search_artifact": {
+    "path": "SeaWeb/var/pages_artifact/pending/sfblogs_20260727",
+    "verified_ok": true,
+    "pages": 3353,
+    "passages": 153171,
+    "sha256_pages_db": "9dc0d7bc616346f5575f95b2baf05f807881fe1684e805574564de05d8315d4d"
+  },
+  "runs": {
+    "local_parity": {
+      "n": 111, "correct": 0, "incorrect": 0, "not_attempted": 111, "grade_error": 0,
+      "attempted_rate": 0.0, "accuracy_given_attempted": 0.0, "overall_correct": 0.0,
+      "f_score": 0.0, "confident_wrong_rate": 0.0,
+      "questions_with_nonzero_search_docs": 1,
+      "path": "results/20260730-seal0/local_parity/"
+    },
+    "local_honest": {
+      "n": 111, "correct": 0, "incorrect": 0, "not_attempted": 111, "grade_error": 0,
+      "attempted_rate": 0.0, "accuracy_given_attempted": 0.0, "overall_correct": 0.0,
+      "f_score": 0.0, "confident_wrong_rate": 0.0,
+      "questions_with_nonzero_search_docs": 1,
+      "path": "results/20260730-seal0/local_honest/"
+    },
+    "prod_spotcheck": {
+      "n": 5, "correct": 0, "incorrect": 0, "not_attempted": 5, "grade_error": 0,
+      "attempted_rate": 0.0, "accuracy_given_attempted": 0.0, "overall_correct": 0.0,
+      "f_score": 0.0, "confident_wrong_rate": 0.0,
+      "questions_with_nonzero_search_docs": 0,
+      "note": "prod is (per operator memory) currently rolled back to serve the SAME sfblogs_20260727 artifact; the 5 spot-checked questions returned n_docs=0 on both local and prod, i.e. observed parity on this sample",
+      "path": "results/20260730-seal0/prod_spotcheck/"
+    }
+  },
+  "headline": {
+    "confident_wrong_rate_local_parity": 0.0,
+    "confident_wrong_rate_local_honest": 0.0,
+    "confident_wrong_rate_prod_spotcheck": 0.0,
+    "correct_count_all_runs": 0,
+    "caveat": "0% confident-wrong is achieved here almost entirely BY ABSTENTION FROM COVERAGE GAP, not by resolving conflicting evidence: SeaWeb's crawled corpus (sfblogs_20260727) is deliberately scoped to Travel & Hospitality / San Francisco Bay Area (see memory: travel-intelligence-target-lock), so it has near-zero topical overlap with Seal-0's Entertainment/Sports/Science/Aviation trivia questions. 110/111 questions retrieved 0 search docs in both modes; the composer's OWN judgment (not corpus emptiness) produced the 111th abstention on the 1 question with docs ('Mercury(I) chloride valency' pulled 10 irrelevant 'Mercury'-homonym travel-blog passages -- planet/singer/element mercury, never chemistry -- and correctly declined). No question in this run had search results that were topically on-target but conflicting, so the abstention machinery's CONFLICT-resolution behavior (the actual Seal-0 thesis) was never exercised -- only its NO-COVERAGE behavior was. Confident-wrong rate 0% is real and reproducible, but should not be read as 'SeaWeb resolves conflicting evidence safely' -- it has not yet been tested on a single Seal-0 question where it retrieved evidence AND that evidence conflicted."
+  },
+  "bugs_found": [
+    {
+      "component": "tavily-search-evals/seaweb_run.py SeaWebClient.search()",
+      "symptom": "KeyError: slice(None, 10, None) on every prod call",
+      "root_cause": "SeaWeb gateway/server.py's search_web MCP tool changed its return shape on 2026-07-28 from a bare JSON list to an envelope {\"coverage\", \"results\", \"note\"} (server.py ~line 2095, comment: 'envelope (breaking change, 2026-07-28)'). SeaWebClient.search() still does `for row in rows[:MAX_DOCS]` assuming rows is a list; against the new envelope rows is a dict, and dict[:10] raises KeyError.",
+      "reproduced": "live prod call 2026-07-30, query 'Grammy Award Album of the Year record'",
+      "fix_applied": "NOT applied to seaweb_run.py (task scope forbids modifying existing files outside new files); worked around in-place inside seal0_run.py's PacedProdClient, which reimplements the HTTP call and unwraps either shape.",
+      "action_needed": "seaweb_run.py's SeaWebClient.search() needs the same dict-unwrap fix before any future prod run through that file."
+    }
+  ]
+}

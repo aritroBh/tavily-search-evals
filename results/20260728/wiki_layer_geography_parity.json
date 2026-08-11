@@ -1,0 +1,16 @@
+{
+  "slice": "geography",
+  "mode": "parity",
+  "n": 424,
+  "correct": 38,
+  "incorrect": 19,
+  "not_attempted": 367,
+  "grade_error": 0,
+  "attempted_rate": 0.1344,
+  "accuracy_given_attempted": 0.6667,
+  "overall_correct": 0.0896,
+  "f_score": 0.158,
+  "search": "local wiki.db FTS canonical (no semantic re-rank), top10",
+  "composer_grader_model": "claude-haiku-4-5-20251001",
+  "composer_prompt": "upstream PostProcessor verbatim"
+}

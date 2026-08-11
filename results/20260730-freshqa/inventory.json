@@ -1,0 +1,36 @@
+{
+  "dataset_snapshot_date": "2026-04-21",
+  "n_total": 600,
+  "by_split": {
+    "TEST": 500,
+    "DEV": 100
+  },
+  "by_fact_type": {
+    "slow-changing": 220,
+    "never-changing": 225,
+    "fast-changing": 155
+  },
+  "by_false_premise": {
+    "TRUE": 149,
+    "FALSE": 451
+  },
+  "by_num_hops": {
+    "one-hop": 463,
+    "multi-hop": 137
+  },
+  "n_travel_adjacent": 110,
+  "travel_by_fact_type": {
+    "slow-changing": 45,
+    "never-changing": 48,
+    "fast-changing": 17
+  },
+  "travel_by_false_premise": {
+    "TRUE": 37,
+    "FALSE": 73
+  },
+  "travel_by_split": {
+    "TEST": 90,
+    "DEV": 20
+  },
+  "n_non_travel": 490
+}

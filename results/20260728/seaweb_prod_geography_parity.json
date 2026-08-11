@@ -1,0 +1,16 @@
+{
+  "slice": "geography",
+  "mode": "parity",
+  "n": 424,
+  "correct": 0,
+  "incorrect": 0,
+  "not_attempted": 424,
+  "grade_error": 0,
+  "attempted_rate": 0.0,
+  "accuracy_given_attempted": 0.0,
+  "overall_correct": 0.0,
+  "f_score": 0.0,
+  "search": "seaweb prod anon MCP, top10",
+  "composer_grader_model": "claude-haiku-4-5-20251001",
+  "composer_prompt": "upstream PostProcessor verbatim"
+}

@@ -1,0 +1,125 @@
+{
+  "task": "travel-anchored SimpleQA slice (TODOS.md #97) -- SeaWeb beachhead metric",
+  "date": "2026-07-30",
+  "filter": {
+    "script": "build_travel_slice.py",
+    "rule": "TEXT = problem + ' ' + answer, over the FULL 4326-row dataset. Match if TEXT contains (C) a Title-Case place-head phrase immediately followed by a travel-place-class suffix (Bridge/Museum/National Park/Airport/Hotel/Station/...), or (D) a place-class prefix (Mount/Lake/Cape/Port/Fort/...) immediately followed by a Title-Case proper noun, or (B) a gazetteer city name, or (A) a gazetteer country name -- B and A both GUARDED: excluded if immediately preceded by an institutional/honorific phrase (Order of, University of, Ministry of, ...), and required to be either preceded within ~5 words by a locational cue (in/at/from/to/near/visit/travel/capital/border/...) or to BE the gold answer verbatim (place-identification questions, e.g. 'In which country is X found?').",
+    "seed": 20260730,
+    "output_dataset": "datasets/travel_slice_20260730.jsonl",
+    "counts": {
+      "full_dataset_rows": 4326,
+      "slice_rows": 545,
+      "slice_pct_of_full": 12.6,
+      "by_matched_rule": {"C_place_suffix": 235, "A_country": 167, "B_city": 119, "D_place_prefix": 24},
+      "by_original_topic": {
+        "Geography": 136, "Art": 92, "Politics": 80, "Other": 56, "Sports": 52,
+        "Science and technology": 41, "Music": 34, "TV shows": 26, "History": 22, "Video games": 6
+      },
+      "geography_topic_rows_in_slice": 136,
+      "geography_topic_rows_in_slice_pct_of_424": 32.1,
+      "non_geography_topic_rows_pulled_in": 409
+    },
+    "disclosed_limitations": [
+      "recall-oriented lexical heuristic, not NER -- will still admit some incidental place mentions (e.g. 'Harris County' in a school-fire question) and will still miss travel entities phrased without a gazetteer/suffix/prefix hit",
+      "a v1 (ungguarded) pass over the same data matched 1173/4326 (27.1%) via bare country/city co-occurrence alone (e.g. 'Mali G52 MC2' GPU matched country Mali, 'Victoria Villarruel' matched city Victoria as a person's first name); the guards above (NEG_PRECEDING blocklist + LOCATIONAL_CUE requirement) cut that to 545 -- both counts are disclosed, not just the final one"
+    ]
+  },
+  "runs": {
+    "local_honest": {
+      "search": "local frozen artifact SeaWeb/var/pages_artifact/pending/sfblogs_20260727 (3,353 pages / 153,171 passages, manifest-verified) via SeaWeb/gateway/index_search.py::search_passages(), UNMODIFIED serving ranking code, top10",
+      "mode": "honest (upstream PARITY_PROMPT + explicit abstention instruction)",
+      "n": 545, "correct": 0, "incorrect": 0, "not_attempted": 545, "grade_error": 0,
+      "attempted_rate": 0.0, "accuracy_given_attempted": 0.0, "overall_correct": 0.0, "f_score": 0.0,
+      "elapsed_s": 7.4,
+      "rows_file": "results/20260730-simpleqa-travel/local_honest/rows.jsonl"
+    },
+    "local_parity": {
+      "search": "local frozen artifact SeaWeb/var/pages_artifact/pending/sfblogs_20260727, same as above, top10",
+      "mode": "parity (upstream PARITY_PROMPT verbatim, no abstention instruction)",
+      "n": 545, "correct": 0, "incorrect": 0, "not_attempted": 545, "grade_error": 0,
+      "attempted_rate": 0.0, "accuracy_given_attempted": 0.0, "overall_correct": 0.0, "f_score": 0.0,
+      "elapsed_s": 18.1,
+      "rows_file": "results/20260730-simpleqa-travel/local_parity/rows.jsonl"
+    },
+    "composer_grader_model": "claude-haiku-4-5-20251001",
+    "runtime_note": "1,090 total question-runs (545 x 2 modes) completed in ~25.5s combined -- 545/545 rows in each mode returned zero local search coverage except 4 shared rows (0.7%), so the Claude CLI compose/grade path fired only 4 times (honest) / 8 times (parity, since the composer's prose refusal did not literal-match the honest-mode deterministic-NOT_ATTEMPTED shortcut and fell through to a real grader call). No 2h stop-condition cut was needed; full 545-row slice ran in both modes."
+  },
+  "coverage_finding": {
+    "headline": "0.7% local search coverage (4/545) on the travel-anchored slice, and all 4 of those hits were coordination-filter FALSE coverage -- a different lake/fort/river/country page that shared generic vocabulary with the query, not the actual queried subject.",
+    "hits": [
+      {"q": "Which country is the species Acanthops bidens native to?", "gold": "Mexico",
+       "hit_url": "https://www.atlasobscura.com/things-to-do/mexico",
+       "note": "page is a generic 'things to do in Mexico' guide, not about the species; correct only by coincidence that gold==Mexico"},
+      {"q": "What is the Muzaffarabad Fort locally known as?", "gold": "Rutta Qila",
+       "hit_url": "https://www.capetown.travel/50-things-to-do-for-under-r50-in-cape-town/",
+       "note": "page is about a DIFFERENT fort in Cape Town, South Africa, also 'locally known as' something (The Castle) -- a near-identical phrasing lure"},
+      {"q": "In feet, what is the maximum depth of Wular Lake?", "gold": "46 ft",
+       "hit_url": "https://dec.ny.gov/places/lake-george-islands-campgrounds",
+       "note": "page is about Lake George, NY (depth 195 ft) -- wrong lake entirely"},
+      {"q": "What river is the Kokosing River a tributary of?", "gold": "Walhonding River",
+       "hit_url": "https://www.poland.travel/en/health-resorts/",
+       "note": "page is about Polish rivers (Vistula system) -- wrong river/continent entirely"}
+    ]
+  },
+  "honesty_headline": {
+    "confident_wrong_count_honest_mode": 0,
+    "confident_wrong_count_parity_mode": 0,
+    "confident_wrong_rate_honest_mode": "0/545 = 0.0%",
+    "confident_wrong_rate_parity_mode": "0/545 = 0.0%",
+    "interpretation": "Zero hallucinations in either mode. On all 4 rows where the corpus surfaced misleading/off-topic documents (see coverage_finding.hits), the composer refused to answer in BOTH modes -- including PARITY mode, which carries no explicit abstention instruction and whose upstream prompt explicitly directs 'return only the final answer, nothing else'. The composer instead wrote out why the document didn't answer the question (e.g. 'The document discusses a fort in Cape Town, South Africa, not Muzaffarabad Fort'), which the grader classified NOT_ATTEMPTED. This is the honesty property holding even without the abstention rail -- but it comes bundled with the coverage finding above: honesty measured zero-confident-wrong because there was effectively nothing to be wrong ABOUT (0.7% coverage, and that coverage was itself all off-topic)."
+  },
+  "correct_answers_marquee_list": [],
+  "correct_answers_note": "EMPTY in both modes -- 0/545 correct in honest mode, 0/545 correct in parity mode. No pilot-demo 'got it right' ammo exists from this slice as run. This is a raw, disclosed null result, not an omission.",
+  "comparison_to_prior_runs": {
+    "seaweb_prod_full_geography_20260728": {
+      "file": "results/20260728/seaweb_prod_geography_parity.json",
+      "slice": "Geography topic only (424 rows, unfiltered for place-anchoring), prod anon MCP, parity mode",
+      "n": 424, "correct": 0, "incorrect": 0, "not_attempted": 424, "overall_correct": 0.0,
+      "comparability_note": "SAME headline shape as this travel-anchored slice (100% not_attempted) -- the place-anchor filter did not recover attempted answers where the unfiltered Geography topic had none; both point at the same root cause, corpus coverage (3,353 pages, narrow destination-guide content) essentially never intersecting SimpleQA's ultra-specific factoid phrasing, place-anchored or not."
+    },
+    "wiki_layer_full_geography_20260728": {
+      "file": "results/20260728/wiki_layer_geography_parity.json",
+      "slice": "Geography topic only (424 rows), LOCAL wiki.db FTS (7.2M articles, NOT SeaWeb), parity mode",
+      "n": 424, "correct": 38, "incorrect": 19, "not_attempted": 367,
+      "attempted_rate": 0.1344, "accuracy_given_attempted": 0.6667, "overall_correct": 0.0896, "f_score": 0.158,
+      "comparability_note": "Different PROVIDER (general Wikipedia base layer, not SeaWeb's travel crawl) on a different SLICE (unfiltered Geography topic, not this travel-place-anchored one) -- included only as a rough floor for 'what a broad general-knowledge index buys vs. a narrow 3,353-page travel-destination crawl', not a SeaWeb number."
+    },
+    "published_competitor_full_set_20250115": {
+      "source": "tavily-search-evals/README.md evaluation table",
+      "slice": "FULL upstream SimpleQA set (4,326 rows, all topics, unfiltered), GPT-4.1 composer+grader",
+      "scores_pct": {"Tavily": 93.3, "Perplexity Search": 85.92, "Google/SERPER": 82.15, "Brave Search": 76.05, "Exa Search": 71.24},
+      "comparability_note": "NOT COMPARABLE, disclosed explicitly: (1) different dataset -- full 4,326-row set vs. this run's 545-row travel-place-anchored 12.6% subset; (2) different search providers -- general web-scale search vs. SeaWeb's 3,353-page purpose-built travel crawl; (3) different LLM -- GPT-4.1 vs. claude-haiku-4-5-20251001 for composer+grader here (a deviation seaweb_run.py's own docstring already flags). Cited only because the task asked for the reference range."
+    }
+  },
+  "prod_parity_spotcheck": {
+    "file": "results/20260730-simpleqa-travel/prod_parity_spotcheck.json",
+    "n_queries": 10, "prod_calls": 10, "pace_s": 4.0,
+    "coverage_agreement": "10/10",
+    "top3_url_exact_agreement": "10/10",
+    "queries_checked": "the 4 local 'hit' rows (n_docs>0) + 6 local 'miss' rows (first 6 non-hit rows in slice file order), each run against BOTH local search_passages() and the live api.seaweb.tech anonymous MCP search_web endpoint",
+    "finding": "Exact agreement on coverage flag AND top-3 result URLs for all 10 queries -- empirically confirms the bulk local run (SeaWeb/gateway/index_search.py over the frozen sfblogs_20260727 artifact) is equivalent to what prod is serving right now, not merely a proxy.",
+    "methodology_deviation_disclosed": "seaweb_run.py's SeaWeb.search() parser assumes the MCP response's inner JSON is a bare list (`rows[:MAX_DOCS]`). Probed live 2026-07-28: prod's search_web tool now wraps results in an envelope, {'coverage','results','note'} -- a change dated the same day in gateway/server.py's own comments. Run unmodified against current prod, seaweb_run.py's client would raise TypeError('unhashable type: slice') on every call (dict sliced, not list), since that line sits outside the method's try/except. prod_parity_check.py (this run) parses both shapes so the spot-check could execute; this mismatch is reported, not silently patched upstream."
+  },
+  "stop_conditions": {
+    "artifact_missing_fallback_needed": false,
+    "artifact_manifest": {"pages": 3353, "passages": 153171, "matches_expected_3353": true},
+    "cli_smoke": "PONG round-trip via /Users/aritro/.local/bin/claude --model claude-haiku-4-5-20251001 --setting-sources '' --strict-mcp-config -p, 4.14s -- passed",
+    "projected_runtime_over_2h": false,
+    "actual_runtime": "25.5s combined for both modes over 545 rows each -- no cut to seeded random 200 was necessary",
+    "prod_calls_total": 10,
+    "prod_calls_budget": 10,
+    "prod_pacing_s": 4.0
+  },
+  "files": {
+    "filter_script": "build_travel_slice.py",
+    "slice_dataset": "datasets/travel_slice_20260730.jsonl",
+    "local_runner": "seaweb_run_local.py",
+    "prod_parity_script": "prod_parity_check.py",
+    "local_honest_rows": "results/20260730-simpleqa-travel/local_honest/rows.jsonl",
+    "local_honest_summary": "results/20260730-simpleqa-travel/local_honest/summary.json",
+    "local_parity_rows": "results/20260730-simpleqa-travel/local_parity/rows.jsonl",
+    "local_parity_summary": "results/20260730-simpleqa-travel/local_parity/summary.json",
+    "prod_parity_spotcheck": "results/20260730-simpleqa-travel/prod_parity_spotcheck.json",
+    "markdown_report": "results/20260730-simpleqa-travel/REPORT.md"
+  }
+}

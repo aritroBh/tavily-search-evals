@@ -1,0 +1,15 @@
+{
+  "dataset": "SealQA seal_0/test (Seal-0, 111q hardest slice)",
+  "provider": "local",
+  "mode": "parity",
+  "n": 111,
+  "correct": 0,
+  "incorrect": 0,
+  "not_attempted": 111,
+  "grade_error": 0,
+  "attempted_rate": 0.0,
+  "accuracy_given_attempted": 0.0,
+  "overall_correct": 0.0,
+  "f_score": 0.0,
+  "confident_wrong_rate": 0.0
+}
