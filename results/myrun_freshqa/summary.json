@@ -1,0 +1,469 @@
+{
+  "dataset": "FreshQA",
+  "dataset_snapshot_date": "2026-04-21",
+  "dataset_source": "https://github.com/freshllms/freshqa (Google Sheets export, newest linked snapshot)",
+  "seed": 20260730,
+  "non_travel_sample_target": 100,
+  "n_total": 210,
+  "n_travel": 110,
+  "n_non_travel": 100,
+  "search": "local pages_artifact, local artifact local_index",
+  "composer_grader_model": "claude-haiku-4-5-20251001",
+  "composer_prompt": "upstream PostProcessor verbatim + abstention rule (honest mode)",
+  "overall": {
+    "n": 210,
+    "simpleqa": {
+      "correct": 4,
+      "incorrect": 4,
+      "not_attempted": 202,
+      "grade_error": 0,
+      "attempted_rate": 0.0381,
+      "accuracy_given_attempted": 0.5,
+      "overall_correct": 0.019,
+      "f_score": 0.0367
+    },
+    "freshqa_strict_accuracy": 0.019,
+    "freshqa_strict_correct_count": 4
+  },
+  "travel": {
+    "n": 110,
+    "simpleqa": {
+      "correct": 3,
+      "incorrect": 2,
+      "not_attempted": 105,
+      "grade_error": 0,
+      "attempted_rate": 0.0455,
+      "accuracy_given_attempted": 0.6,
+      "overall_correct": 0.0273,
+      "f_score": 0.0522
+    },
+    "freshqa_strict_accuracy": 0.0273,
+    "freshqa_strict_correct_count": 3
+  },
+  "non_travel": {
+    "n": 100,
+    "simpleqa": {
+      "correct": 1,
+      "incorrect": 2,
+      "not_attempted": 97,
+      "grade_error": 0,
+      "attempted_rate": 0.03,
+      "accuracy_given_attempted": 0.3333,
+      "overall_correct": 0.01,
+      "f_score": 0.0194
+    },
+    "freshqa_strict_accuracy": 0.01,
+    "freshqa_strict_correct_count": 1
+  },
+  "by_fact_type": {
+    "never-changing": {
+      "n": 83,
+      "simpleqa": {
+        "correct": 2,
+        "incorrect": 1,
+        "not_attempted": 80,
+        "grade_error": 0,
+        "attempted_rate": 0.0361,
+        "accuracy_given_attempted": 0.6667,
+        "overall_correct": 0.0241,
+        "f_score": 0.0465
+      },
+      "freshqa_strict_accuracy": 0.0241,
+      "freshqa_strict_correct_count": 2
+    },
+    "slow-changing": {
+      "n": 78,
+      "simpleqa": {
+        "correct": 2,
+        "incorrect": 3,
+        "not_attempted": 73,
+        "grade_error": 0,
+        "attempted_rate": 0.0641,
+        "accuracy_given_attempted": 0.4,
+        "overall_correct": 0.0256,
+        "f_score": 0.0482
+      },
+      "freshqa_strict_accuracy": 0.0256,
+      "freshqa_strict_correct_count": 2
+    },
+    "fast-changing": {
+      "n": 49,
+      "simpleqa": {
+        "correct": 0,
+        "incorrect": 0,
+        "not_attempted": 49,
+        "grade_error": 0,
+        "attempted_rate": 0.0,
+        "accuracy_given_attempted": 0.0,
+        "overall_correct": 0.0,
+        "f_score": 0.0
+      },
+      "freshqa_strict_accuracy": 0.0,
+      "freshqa_strict_correct_count": 0
+    }
+  },
+  "by_false_premise": {
+    "TRUE": {
+      "n": 57,
+      "simpleqa": {
+        "correct": 0,
+        "incorrect": 1,
+        "not_attempted": 56,
+        "grade_error": 0,
+        "attempted_rate": 0.0175,
+        "accuracy_given_attempted": 0.0,
+        "overall_correct": 0.0,
+        "f_score": 0.0
+      },
+      "freshqa_strict_accuracy": 0.0,
+      "freshqa_strict_correct_count": 0
+    },
+    "FALSE": {
+      "n": 153,
+      "simpleqa": {
+        "correct": 4,
+        "incorrect": 3,
+        "not_attempted": 146,
+        "grade_error": 0,
+        "attempted_rate": 0.0458,
+        "accuracy_given_attempted": 0.5714,
+        "overall_correct": 0.0261,
+        "f_score": 0.05
+      },
+      "freshqa_strict_accuracy": 0.0261,
+      "freshqa_strict_correct_count": 4
+    }
+  },
+  "by_fact_type_travel_split": {
+    "never-changing": {
+      "travel": {
+        "n": 48,
+        "simpleqa": {
+          "correct": 1,
+          "incorrect": 0,
+          "not_attempted": 47,
+          "grade_error": 0,
+          "attempted_rate": 0.0208,
+          "accuracy_given_attempted": 1.0,
+          "overall_correct": 0.0208,
+          "f_score": 0.0408
+        },
+        "freshqa_strict_accuracy": 0.0208,
+        "freshqa_strict_correct_count": 1
+      },
+      "non_travel": {
+        "n": 35,
+        "simpleqa": {
+          "correct": 1,
+          "incorrect": 1,
+          "not_attempted": 33,
+          "grade_error": 0,
+          "attempted_rate": 0.0571,
+          "accuracy_given_attempted": 0.5,
+          "overall_correct": 0.0286,
+          "f_score": 0.0541
+        },
+        "freshqa_strict_accuracy": 0.0286,
+        "freshqa_strict_correct_count": 1
+      }
+    },
+    "slow-changing": {
+      "travel": {
+        "n": 45,
+        "simpleqa": {
+          "correct": 2,
+          "incorrect": 2,
+          "not_attempted": 41,
+          "grade_error": 0,
+          "attempted_rate": 0.0889,
+          "accuracy_given_attempted": 0.5,
+          "overall_correct": 0.0444,
+          "f_score": 0.0816
+        },
+        "freshqa_strict_accuracy": 0.0444,
+        "freshqa_strict_correct_count": 2
+      },
+      "non_travel": {
+        "n": 33,
+        "simpleqa": {
+          "correct": 0,
+          "incorrect": 1,
+          "not_attempted": 32,
+          "grade_error": 0,
+          "attempted_rate": 0.0303,
+          "accuracy_given_attempted": 0.0,
+          "overall_correct": 0.0,
+          "f_score": 0.0
+        },
+        "freshqa_strict_accuracy": 0.0,
+        "freshqa_strict_correct_count": 0
+      }
+    },
+    "fast-changing": {
+      "travel": {
+        "n": 17,
+        "simpleqa": {
+          "correct": 0,
+          "incorrect": 0,
+          "not_attempted": 17,
+          "grade_error": 0,
+          "attempted_rate": 0.0,
+          "accuracy_given_attempted": 0.0,
+          "overall_correct": 0.0,
+          "f_score": 0.0
+        },
+        "freshqa_strict_accuracy": 0.0,
+        "freshqa_strict_correct_count": 0
+      },
+      "non_travel": {
+        "n": 32,
+        "simpleqa": {
+          "correct": 0,
+          "incorrect": 0,
+          "not_attempted": 32,
+          "grade_error": 0,
+          "attempted_rate": 0.0,
+          "accuracy_given_attempted": 0.0,
+          "overall_correct": 0.0,
+          "f_score": 0.0
+        },
+        "freshqa_strict_accuracy": 0.0,
+        "freshqa_strict_correct_count": 0
+      }
+    }
+  },
+  "marquee_fast_changing_travel": [
+    {
+      "id": "378",
+      "question": "How many tornadoes have been confirmed by Enhanced Fujita rating in the United States so far this year?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "1,429",
+        "There have been 1,429 confirmed tornadoes in the United States."
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "380",
+      "question": "What date was the last time it rained in New York City?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Apr 17, 2026",
+        "April 17, 2026",
+        "17 Apr 2026",
+        "17 April 2026",
+        "04/17/2026",
+        "04-17-2026",
+        "17/04/2026",
+        "17-04-2026",
+        "2026/04/17",
+        "2026-04-17"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "391",
+      "question": "On what date did the Patriots last play the Miami Dolphins?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Jan 4, 2026",
+        "January 4, 2026",
+        "4 Jan 2026",
+        "4 January 2026",
+        "01/4/2026",
+        "01-4-2026",
+        "4/01/2026",
+        "4-01-2026",
+        "2026/01/4",
+        "2026-01-4"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "401",
+      "question": "What date is mother's day in the United States this year?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Sunday, May 10",
+        "May 10, 2026",
+        "10 May 2026",
+        "05/10/2026",
+        "05-10-2026",
+        "10/05/2026",
+        "10-05-2026",
+        "2026/05/10"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "402",
+      "question": "What date is father's day in the United States this year?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Sunday, June 21",
+        "Jun 21, 2026",
+        "June 21, 2026",
+        "21 Jun 2026",
+        "21 June 2026",
+        "06/21/2026",
+        "06-21-2026",
+        "21/06/2026",
+        "21-06-2026",
+        "2026/06/21"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "405",
+      "question": "What was the highest-grossing film in the United States last year?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Zootopia 2"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "449",
+      "question": "Who was the guest of honor at the most recent state dinner hosted by the President of the United States?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Mohammed bin Salman"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "455",
+      "question": "What is the latest United States jurisdiction to legalize the recreational use of cannabis?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Ohio"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "456",
+      "question": "What is the youngest age eligible for COVID-19 vaccination in the United States?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "6 months"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "463",
+      "question": "Do the Toronto Raptors have a winning record in the latest NBA season?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Yes"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "470",
+      "question": "Which author had the most bestselling novels in the United States last year according to Publishers Weekly?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Dav Pilkey and Rebecca Yarros",
+        "Rebecca Yarros and Dav Pilkey"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "475",
+      "question": "How long has Mauna Loa been a dormant volcano since its most recent eruption?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "more than 3 years"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "489",
+      "question": "How far did the United States representative go at the last Miss World?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Top 20"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "422",
+      "question": "Who is the starting running back for the San Francisco 49ers?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Christian McCaffrey"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 1
+    },
+    {
+      "id": "579",
+      "question": "According to the WHO\u2019s latest reported 28-day figures, which country had the highest number of COVID-19 deaths, excluding the United States?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Sweden"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "587",
+      "question": "What is the name of the most recent hurricane that affected the Southeastern United States?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "Imelda"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    },
+    {
+      "id": "598",
+      "question": "When was the most recent winner of the Tour de France born?",
+      "predicted": "I cannot answer.",
+      "gold_answers": [
+        "1998",
+        "Sep 21, 1998",
+        "September 21, 1998",
+        "21 Sep 1998",
+        "21 September 1998",
+        "09/21/1998",
+        "09-21-1998",
+        "21/09/1998",
+        "21-09-1998",
+        "1998/09/21"
+      ],
+      "simpleqa_grade": "NOT_ATTEMPTED",
+      "strict_correct": "FALSE",
+      "n_docs": 0
+    }
+  ]
+}

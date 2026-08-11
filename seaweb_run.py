@@ -34,6 +34,7 @@ import argparse
 import ast
 import csv
 import json
+import os
 import random
 import re
 import subprocess
@@ -172,7 +173,8 @@ class SeaWebClient:
                 data_lines = [l[5:].strip() for l in body.splitlines() if l.startswith("data:")]
                 payload = json.loads(data_lines[-1])
             text = payload["result"]["content"][0]["text"]
-            rows = json.loads(text)
+            envelope = json.loads(text)
+            rows = envelope.get("results", []) if isinstance(envelope, dict) else envelope
         except Exception:
             return []
         docs = []
@@ -218,14 +220,22 @@ def format_docs(docs: list[tuple[str, str]]) -> str:
     )
 
 
+_CLEAN_ENV = {k: v for k, v in os.environ.items()
+              if not k.startswith("CLAUDECODE") and not k.startswith("CLAUDE_CODE_")}
+
+
 def claude(prompt: str, model: str) -> str:
-    """One headless Claude call. Isolated from user settings/hooks/MCP."""
+    """One headless Claude call. Isolated from user settings/hooks/MCP.
+    env=_CLEAN_ENV strips the parent Claude Code session's CLAUDECODE /
+    CLAUDE_CODE_* vars so this nested `claude -p` call runs stateless
+    instead of attaching to the outer session (see freshqa_run.claude())."""
     for attempt in range(2):
         try:
             out = subprocess.run(
                 [CLAUDE_BIN, "--model", model, "--setting-sources", "",
                  "--strict-mcp-config", "-p", prompt],
                 capture_output=True, text=True, timeout=180,
+                env=_CLEAN_ENV,
             )
             if out.returncode == 0 and out.stdout.strip():
                 return out.stdout.strip()

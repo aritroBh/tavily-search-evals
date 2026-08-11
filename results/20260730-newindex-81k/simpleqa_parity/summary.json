@@ -1,0 +1,17 @@
+{
+  "slice": "travel_place_anchored_20260730",
+  "mode": "parity",
+  "n": 545,
+  "correct": 0,
+  "incorrect": 0,
+  "not_attempted": 545,
+  "grade_error": 0,
+  "attempted_rate": 0.0,
+  "accuracy_given_attempted": 0.0,
+  "overall_correct": 0.0,
+  "f_score": 0.0,
+  "search": "local frozen artifact local_index (SeaWeb/gateway/index_search.py, unmodified serving ranking), top10",
+  "composer_grader_model": "claude-haiku-4-5-20251001",
+  "composer_prompt": "upstream PostProcessor verbatim",
+  "elapsed_s": 158.8
+}

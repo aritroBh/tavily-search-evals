@@ -1,0 +1,87 @@
+{
+  "n": 10,
+  "top_url_matches": 10,
+  "match_rate": 1.0,
+  "rows": [
+    {
+      "question": "How far did the United States representative go at the last Miss World?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "How many tornadoes have been confirmed by Enhanced Fujita rating in the United States so far this year?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "How far did Russia go in the FIFA World Cup 2022?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "What is the most populous city in Chile?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "Who was the first African American woman to appear on a quarter in the United States?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "Which party won the 2022 elections held in Afghanistan?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "Who was the first female president of the United States?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "Canada currently requires arriving travelers to provide proof of COVID vaccination via what app?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "Who was the emperor of China when the American Revolutionary War ended?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    },
+    {
+      "question": "What is the tallest mountain in Alaska?",
+      "prod_n": 0,
+      "prod_top_url": null,
+      "local_n": 0,
+      "local_top_url": null,
+      "top_match": true
+    }
+  ]
+}

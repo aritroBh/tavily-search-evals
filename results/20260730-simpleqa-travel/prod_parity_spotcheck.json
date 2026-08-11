@@ -1,0 +1,127 @@
+{
+  "n_queries": 10,
+  "prod_calls": 10,
+  "pace_s": 4.0,
+  "coverage_agreement": "10/10",
+  "top3_url_exact_agreement": "10/10",
+  "rows": [
+    {
+      "q": "Which country is the species Acanthops bidens native to?",
+      "local_n": 1,
+      "local_top3_urls": [
+        "https://www.atlasobscura.com/things-to-do/mexico"
+      ],
+      "prod_coverage": "covered",
+      "prod_n": 1,
+      "prod_top3_urls": [
+        "https://www.atlasobscura.com/things-to-do/mexico"
+      ],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "What is the Muzaffarabad Fort locally known as?",
+      "local_n": 1,
+      "local_top3_urls": [
+        "https://www.capetown.travel/50-things-to-do-for-under-r50-in-cape-town/"
+      ],
+      "prod_coverage": "covered",
+      "prod_n": 1,
+      "prod_top3_urls": [
+        "https://www.capetown.travel/50-things-to-do-for-under-r50-in-cape-town/"
+      ],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "In feet, what is the maximum depth of Wular Lake?",
+      "local_n": 1,
+      "local_top3_urls": [
+        "https://dec.ny.gov/places/lake-george-islands-campgrounds"
+      ],
+      "prod_coverage": "covered",
+      "prod_n": 1,
+      "prod_top3_urls": [
+        "https://dec.ny.gov/places/lake-george-islands-campgrounds"
+      ],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "What river is the Kokosing River a tributary of?",
+      "local_n": 2,
+      "local_top3_urls": [
+        "https://www.poland.travel/en/health-resorts/",
+        "https://www.bolan.travel/mapa/"
+      ],
+      "prod_coverage": "covered",
+      "prod_n": 2,
+      "prod_top3_urls": [
+        "https://www.poland.travel/en/health-resorts/",
+        "https://www.bolan.travel/mapa/"
+      ],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "In which year did the Japanese scientist Koichi Mizushima receive the Kato Memorial Prize?",
+      "local_n": 0,
+      "local_top3_urls": [],
+      "prod_coverage": "not_covered",
+      "prod_n": 0,
+      "prod_top3_urls": [],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "In which episode and season of South Park does Bill Cosby (BSM-471) first appear? Give me the number and title.",
+      "local_n": 0,
+      "local_top3_urls": [],
+      "prod_coverage": "not_covered",
+      "prod_n": 0,
+      "prod_top3_urls": [],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "In which month and year did Khusro Bakhtiar (former Federal Minister for Planning, Development, and Reforms, Pakistan) announce that the government was considering establishing a Pak-China business council to promote the private sector's role in the China-Pakistan Economic Corridor (CPEC)?",
+      "local_n": 0,
+      "local_top3_urls": [],
+      "prod_coverage": "not_covered",
+      "prod_n": 0,
+      "prod_top3_urls": [],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "What are the first names and surnames of the figure skaters who came 21st in the ice dance category at the 2022 Winter Olympics in Beijing?",
+      "local_n": 0,
+      "local_top3_urls": [],
+      "prod_coverage": "not_covered",
+      "prod_n": 0,
+      "prod_top3_urls": [],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "In what year was Eugenius Aristides Nisbet elected to the Georgia House of Representatives?",
+      "local_n": 0,
+      "local_top3_urls": [],
+      "prod_coverage": "not_covered",
+      "prod_n": 0,
+      "prod_top3_urls": [],
+      "urls_match": true,
+      "coverage_match": true
+    },
+    {
+      "q": "Before 2013, what was the municipal division of Gusevsky District in Kaliningrad Oblast incorporated as?",
+      "local_n": 0,
+      "local_top3_urls": [],
+      "prod_coverage": "not_covered",
+      "prod_n": 0,
+      "prod_top3_urls": [],
+      "urls_match": true,
+      "coverage_match": true
+    }
+  ]
+}
