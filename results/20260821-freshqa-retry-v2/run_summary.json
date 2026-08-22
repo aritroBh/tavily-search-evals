@@ -1,0 +1,81 @@
+{
+  "attempted": 5,
+  "answered": 3,
+  "abstained": 2,
+  "confident_wrong": 0,
+  "per_question": [
+    {
+      "id": "smoke_1",
+      "question": "What is the capital of France?",
+      "expect": "answer",
+      "attempted": true,
+      "answered": true,
+      "abstained": false,
+      "confident_wrong": false,
+      "live_count": 4,
+      "live_meta": {
+        "live_disabled": false,
+        "cross_tenant_allowed": true,
+        "count": 4,
+        "_raw_count": 4,
+        "_legal_gated": false
+      }
+    },
+    {
+      "id": "smoke_2",
+      "question": "Who wrote the novel 1984?",
+      "expect": "answer",
+      "attempted": true,
+      "answered": true,
+      "abstained": false,
+      "confident_wrong": false,
+      "live_count": 3,
+      "live_meta": {
+        "live_disabled": false,
+        "cross_tenant_allowed": true,
+        "count": 3,
+        "_raw_count": 3,
+        "_legal_gated": false
+      }
+    },
+    {
+      "id": "smoke_3",
+      "question": "What is the largest planet in the Solar System?",
+      "expect": "answer",
+      "attempted": true,
+      "answered": true,
+      "abstained": false,
+      "confident_wrong": false,
+      "live_count": 4,
+      "live_meta": {
+        "live_disabled": false,
+        "cross_tenant_allowed": true,
+        "count": 4,
+        "_raw_count": 4,
+        "_legal_gated": false
+      }
+    },
+    {
+      "id": "smoke_4",
+      "question": "What is the secret quantum code for project XQZ 9999?",
+      "expect": "abstain",
+      "attempted": true,
+      "answered": false,
+      "abstained": true,
+      "confident_wrong": false,
+      "live_count": 0,
+      "live_meta": {}
+    },
+    {
+      "id": "smoke_5",
+      "question": "Who will win the 2035 intergalactic Olympics on Mars?",
+      "expect": "abstain",
+      "attempted": true,
+      "answered": false,
+      "abstained": true,
+      "confident_wrong": false,
+      "live_count": 0,
+      "live_meta": {}
+    }
+  ]
+}

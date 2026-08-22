@@ -75,6 +75,12 @@ def load_cassette(path: Path) -> dict:
             rec = json.loads(line)
         except Exception:
             continue
+        # v2 meta record: {"hostpack": {question: [candidate urls]}} feeds
+        # discovery.d0_5_host_pack — the owned-discovery cutover (5073e1d1)
+        # retired the wiki_search rung the v1 cassette relied on.
+        if isinstance(rec.get("hostpack"), dict):
+            m["__hostpack__"] = {"hostpack": rec["hostpack"]}
+            continue
         url = rec.get("url")
         if not url:
             continue
@@ -275,6 +281,14 @@ def run(questions: list[dict] | None = None, cassette: str | Path | None = None,
     cassette_path = Path(cassette) if cassette is not None else DEFAULT_CASSETTE
     cassette_map = load_cassette(cassette_path)
 
+    _hostpack_rec = cassette_map.pop("__hostpack__", None)
+    _hostpack_raw: dict = {}
+    if _hostpack_rec:
+        try:
+            _hostpack_raw = dict(_hostpack_rec.get("hostpack") or {})
+        except Exception:
+            _hostpack_raw = {}
+
     # Build cassette_get with flexible matching for wiki search srsearch case/encoding
     def _normalize_wiki_url(u: str) -> str | None:
         try:
@@ -325,6 +339,16 @@ def run(questions: list[dict] | None = None, cassette: str | Path | None = None,
     if safe_fetch_mod is not None:
         orig_safe = getattr(safe_fetch_mod, "safe_get", None)
         safe_fetch_mod.safe_get = cassette_get  # type: ignore
+    orig_hostpack = None
+    if discovery is not None and _hostpack_raw:
+        try:
+            from gateway.live_read import normalize_query as _hp_norm
+        except Exception:
+            def _hp_norm(s):
+                return (s or "").lower().strip()
+        _hostpack_map = {_hp_norm(k): list(v or []) for k, v in _hostpack_raw.items()}
+        orig_hostpack = getattr(discovery, "d0_5_host_pack", None)
+        discovery.d0_5_host_pack = lambda q: list(_hostpack_map.get(_hp_norm(q), []))  # type: ignore
 
     # Prepare tmp dirs
     base_tmp = Path(tmp_dir) if tmp_dir is not None else Path(tempfile.mkdtemp(prefix="freshqa_retry_"))
@@ -612,6 +636,11 @@ def run(questions: list[dict] | None = None, cassette: str | Path | None = None,
     if discovery is not None and orig_disc is not None:
         try:
             discovery.safe_get = orig_disc  # type: ignore
+        except Exception:
+            pass
+    if discovery is not None and orig_hostpack is not None:
+        try:
+            discovery.d0_5_host_pack = orig_hostpack  # type: ignore
         except Exception:
             pass
     if robots_mod is not None and orig_robots is not None:
