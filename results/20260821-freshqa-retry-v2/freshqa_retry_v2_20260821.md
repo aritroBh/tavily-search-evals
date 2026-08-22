@@ -72,6 +72,20 @@ holds on dead ends. It is **not** a recall or accuracy measurement, and the
 `.example` hosts are not evidence about real publisher coverage. A parity or
 quality claim needs the pre-registered N>=100 harness (workspace TODO #5).
 
+## Ownership moved after this run
+
+Harness and cassettes now live in SeaWeb — `tests/_freshqa_retry_harness.py`,
+`tests/fixtures/freshqa_smoke.jsonl`, `tests/fixtures/freshqa_smoke_wiki_v1.jsonl`
+— and `freshqa_retry_run.py` here is a shim that imports them. The cassettes
+were deleted from this repo rather than duplicated, so there is one copy and it
+is the one SeaWeb's test pins.
+
+Reason: SeaWeb's `tests/test_freshqa_cassette.py` imported the harness back
+across the workspace, so it skipped in every CI clone and worktree and ran only
+in the shared working copy — where an edit in this repo could turn it red, which
+is what happened on 2026-08-21. Verified sibling-free: unmodified `89a81dcf`
+reports `1 skipped`, the vendored commit reports `3 passed`.
+
 ## Reproduce
 
 ```
@@ -79,7 +93,8 @@ quality claim needs the pre-registered N>=100 harness (workspace TODO #5).
   --out results/20260821-freshqa-retry-v2/run_summary.json
 ```
 
-Control: add `--cassette cassettes/freshqa_smoke.jsonl.bak-20260819-wiki-v1`.
+Control: add `--cassette ../SeaWeb/tests/fixtures/freshqa_smoke_wiki_v1.jsonl`.
+Both also run from SeaWeb directly via `tests/_freshqa_retry_harness.py`.
 
 Imports SeaWeb from the shared working tree, which was dirty at run time
 (branch `wip/seaweb-nextgen-handoff-20260818`, uncommitted gateway security
