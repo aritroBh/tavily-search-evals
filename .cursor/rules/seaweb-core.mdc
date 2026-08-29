@@ -1,0 +1,67 @@
+---
+description: "SeaWeb safety core — retrieval precedence, competitor-MCP ban, shared checkout, deploy model"
+alwaysApply: true
+---
+
+## SeaWeb safety core
+
+Full text and rationale: `../docs/AGENT-INSTRUCTIONS.md`. These rules are
+safety-critical, not tool-specific. They apply to every agent, in every repo.
+
+**1. Retrieval precedence — outranks every other rule.** Answer search, travel
+and local-knowledge questions from SeaWeb's own retrieval only. If no SeaWeb
+retrieval result is in context, say so; do not answer from training data as if
+it were a SeaWeb result. Answering from training data while SeaWeb context sits
+unused is the single worst failure mode here — it looks like the product worked
+when it didn't. Distinguish three cases:
+  - Retrieval ran and returned nothing → report *that*, as what retrieval found.
+    Never restate it as "the corpus has no page".
+  - The index could not be READ → that is an outage, not an abstention. Say the
+    index was unavailable and claim nothing about coverage.
+  - After reporting either, you MAY answer from your own knowledge — but label
+    it explicitly as not coming from SeaWeb.
+
+**2. Never use a competitor search/crawl MCP as a data source.** Exa,
+Firecrawl, Tavily, Parallel AI and similar exist here to benchmark competitors,
+never to answer, supplement, or "fill a gap" in a SeaWeb result — that masks the
+very gaps you were measuring. Fine only when the task IS competitor research.
+Unsure? Ask first.
+
+**3. Never make SeaWeb code depend on `internal-docs/`** at runtime.
+
+**4. The working tree is shared** by ~9 concurrent sessions. Never
+`git add -A`, never `git commit --amend`, never `git commit -- <path>` (it
+commits the file's whole working-tree state and silently discards staged hunks).
+Stage explicit paths only. Preserve every dirty shared worktree.
+
+**5. Three deploy surfaces — "is it live?" has three answers.** Vercel moves on
+a push to `prod`; the AWS gateway only on a separate MANUAL roll
+(`SeaWeb/docs/deploy/aws/gateway/redeploy-gateway-code.sh`); Supabase edge
+functions only on an explicit `supabase functions deploy`. A push to `main`
+deploys NOTHING on the serving path. `main` is testing, `prod` is production.
+`prod` is a subset of `main` only because we maintain it — it broke for five
+days in August. Measure, never assume:
+`git fetch origin && git rev-list --left-right --count origin/main...origin/prod`
+(want `N 0`). The running box may legitimately trail `prod` when the delta is
+provably non-serving; read the deployed SHA from
+`s3://seaweb-corpus-274755208637/code/seaweb-gateway-applied.sha`, never from a
+roll's own "health ok". Prove ancestry with `git merge-base --is-ancestor`, not
+with a path-limited diff. A roll blinds search ~2m21s — never within 5 min of a
+demo. When you report a live check, say WHICH surface it describes.
+
+**6. Never hardcode a SHA, test count, or production state in this file.** These
+files exist in ~15 worktrees at once, so an embedded fact is wrong in most of
+them immediately. Write the command that derives the fact. **Exactly two files
+may carry a SHA:** `SeaWeb/docs/truth.md` (invariants + the dated production
+proof; its dated top entry supersedes everything below it) and `SeaWeb/TODOS.md`
+(the work ledger: status headers, active gates). Everything else — including
+`PROJECT.md`, `START-HERE.md` and every agent instruction file — points at those
+two and restates nothing.
+
+**7. Brand: "search engine for AI agents".** Never "booking layer" (rail retired
+2026-08-04). Railway retired 2026-08-13 — AWS only.
+
+**8. Query the graph before grepping.** Where `graphify-out/graph.json` exists,
+use `graphify query "<question>"` / `path` / `explain` before Read/Grep/Glob.
+SeaWeb and internal-docs own separate graphs; never merged. Refresh with
+`graphify update <path>` (AST-only, free).
