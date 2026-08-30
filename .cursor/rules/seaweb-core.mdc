@@ -34,41 +34,80 @@ Unsure? Ask first.
 commits the file's whole working-tree state and silently discards staged hunks).
 Stage explicit paths only. Preserve every dirty shared worktree.
 
-**5. Three deploy surfaces — "is it live?" has three answers.** Vercel moves on
-a push to `prod` — a dashboard setting, not a tracked file, so confirm it rather
-than trusting this line: `vercel list seaweb --prod` then `vercel inspect <url>`,
-and read the `seaweb-git-<branch>-…` alias, which names the source branch. When
-it was last confirmed is recorded in `SeaWeb/docs/truth.md`, not here; the AWS gateway only on a separate MANUAL roll (the script
-`docs/deploy/aws/gateway/redeploy-gateway-code.sh`, path relative to the SeaWeb
-repo root — this block is copied into several repos, so resolve it there);
-Supabase edge
-functions only on an explicit `supabase functions deploy`. A push to `main`
-deploys NOTHING on the serving path. `main` is testing, `prod` is production.
-`prod` is a subset of `main` only because we maintain it — it broke for five
-days in August. Measure, never assume:
-`git -C "<path-to-SeaWeb>" fetch origin && git -C "<path-to-SeaWeb>" rev-list --left-right
---count origin/main...origin/prod` (want `N 0`; quote the path — it contains a space). **Name the repo explicitly** — this block is copied into
-several sibling repos, and a bare `git` here resolves against whichever one you are standing in. The running box may legitimately trail `prod` when the delta is
-provably non-serving; read the deployed SHA from
+**5. FOUR deploy surfaces — "is it live?" has four answers, and none of them is
+"I pushed".**
+
+- **Vercel.** A push to `prod` triggers a BUILD. The site moves only if that build
+  succeeds and takes the alias; if it fails, the previous deployment stays live.
+  Which branch is bound to production is a **dashboard setting, not a tracked
+  file**, and **the CLI cannot read that binding** — only the project settings
+  are authoritative. `vercel list seaweb --prod` then `vercel inspect <url>` shows
+  a `seaweb-git-<branch>-…` alias, which tells you the branch that produced *that
+  artifact*: useful corroboration, not proof of the current binding.
+- **The AWS gateway.** Moves only on a separate MANUAL roll *as things stand* — verify rather
+  than assume, because nothing prevents someone adding the roll to a workflow job:
+  `git -C "<path-to-SeaWeb>" grep -nE 'redeploy-gateway-code|provision-gateway|ssm.*send-command' <tested-sha> -- .github/workflows/`
+  (one line — a wrapped copy runs an unrestricted `git grep`). **Check the exit code, not just the
+  output:** `git grep` exits 1 for "no match" and 128 for a bad ref or read failure, and both print
+  nothing — so an invalid `<tested-sha>` looks identical to a clean result. Confirm the workflow
+  files exist at that ref first. That is a **smoke test, not proof**: a wrapper script,
+  a composite action, a renamed script or a raw SSM call all evade it. If it matters, read the jobs. The script is
+  `docs/deploy/aws/gateway/redeploy-gateway-code.sh`, path relative to the SeaWeb
+  repo root (this block is copied into several repos, so resolve it there). It
+  defaults to `PROD_REF=origin/prod`, a **mutable** ref; pass an explicit
+  `PROD_REF=<tested-sha>`.
+- **Supabase edge functions.** Expected to move only on an explicit `supabase functions deploy` —
+  "expected", not guaranteed: anyone with credentials can deploy out-of-band.
+- **The Supabase DATABASE.** Schema is expected to move only on an explicit `supabase db push`,
+  independently of edge functions — but that is a convention, not a control: direct SQL, the
+  dashboard, or any other client can change the schema, and `migration list` / `db push --dry-run`
+  tell you about the LEDGER, not about the schema itself. Inspect the schema when it matters — a green edge deploy says nothing about the schema, and the
+  migration ledger can disagree with your local files (Supabase keys on the migration *version*,
+  which need not equal the filename prefix). Run `supabase migration list` and
+  `supabase db push --dry-run` before assuming.
+
+A push to `main` is **not expected** to deploy the serving path — treat that as a
+claim to verify, not a guarantee, since it depends on the Vercel binding and on
+each workflow's `on:` block, both of which can change. `main` is testing, `prod`
+is production. `prod` is a subset of `main` only because we maintain it — it
+broke for five days in August. Measure, never assume, and **name the repo
+explicitly**, because this block is copied into sibling repos and a bare `git`
+resolves against whichever one you are standing in:
+`git -C "<path-to-SeaWeb>" fetch origin` then
+`git -C "<path-to-SeaWeb>" rev-list --left-right --count origin/main...origin/prod`
+(want `N 0`; quote the path, it contains a space — and keep each command on ONE
+line, a wrapped copy-paste runs a broken `rev-list`).
+
+The running box may legitimately trail `prod` when the delta is provably
+non-serving. Read the deployed SHA from
 `s3://seaweb-corpus-274755208637/code/seaweb-gateway-applied.sha`, never from a
 roll's own "health ok". Prove ancestry with `git merge-base --is-ancestor`; a
 path-limited diff is necessary, never sufficient — dependencies, Dockerfiles and
 compose/env plumbing change runtime from outside `gateway workers web`. A roll
-blinds search ~2m21s (measured 2026-08; re-time it if the artifact size changes
-materially) — never within 5 min of a demo. When you report a live check, say WHICH surface it describes.
+blinds search while it settles; `SeaWeb/docs/truth.md` carries the last figure, recorded
+without a precise date or artifact size — indicative only, never schedulable. Do not schedule one anywhere near a demo — no
+fixed safety window is quoted, because a number copied into an instruction file
+is one nobody re-measures. When you report a live check, say WHICH surface it
+describes.
 
-**6. Never hardcode a SHA, test count, or production state in this file.** These
+**6. Never hardcode a SHA, test count, or measured production state in this file.**
+The deploy TOPOLOGY above (which surface moves on which event) is deliberately
+here as environment shape, and every part of it that a dashboard or workflow can
+change carries the command to re-check it. Durable founder decisions belong here
+too. What must never be here is anything MEASURED — a SHA, a test count, a
+latency, a live status. These
 files exist in many worktrees at once (list them with
 `git -C "<path-to-SeaWeb>" worktree list`), so an
 embedded fact is wrong in most of them immediately. Write the command that derives the fact. **Exactly two files
 may carry a SHA:** `SeaWeb/docs/truth.md` (invariants + the dated production
-proof; its dated top entry supersedes everything below it) and `SeaWeb/TODOS.md`
+proof; its dated top entry supersedes older dated entries, never the invariants) and `SeaWeb/TODOS.md`
 (the work ledger: status headers, active gates). Everything else — including
 `PROJECT.md`, `START-HERE.md` and every agent instruction file — points at those
 two and restates nothing.
 
 **7. Brand: "search engine for AI agents".** Never "booking layer" (rail retired
-2026-08-04). Railway retired 2026-08-13 — AWS only.
+2026-08-04). Railway retired 2026-08-13 — the GATEWAY is AWS-only (the
+product still serves through Vercel and two Supabase surfaces).
 
 **8. Query the graph before grepping.** Where `graphify-out/graph.json` exists,
 use `graphify query "<question>"` / `path` / `explain` before Read/Grep/Glob.
