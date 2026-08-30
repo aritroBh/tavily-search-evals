@@ -29,29 +29,38 @@ Unsure? Ask first.
 
 **3. Never make SeaWeb code depend on `internal-docs/`** at runtime.
 
-**4. The working tree is shared** by ~9 concurrent sessions. Never
+**4. The working tree is shared** by many concurrent sessions. Never
 `git add -A`, never `git commit --amend`, never `git commit -- <path>` (it
 commits the file's whole working-tree state and silently discards staged hunks).
 Stage explicit paths only. Preserve every dirty shared worktree.
 
 **5. Three deploy surfaces — "is it live?" has three answers.** Vercel moves on
-a push to `prod`; the AWS gateway only on a separate MANUAL roll
-(`SeaWeb/docs/deploy/aws/gateway/redeploy-gateway-code.sh`); Supabase edge
+a push to `prod` — a dashboard setting, not a tracked file, so confirm it rather
+than trusting this line: `vercel list seaweb --prod` then `vercel inspect <url>`,
+and read the `seaweb-git-<branch>-…` alias, which names the source branch. When
+it was last confirmed is recorded in `SeaWeb/docs/truth.md`, not here; the AWS gateway only on a separate MANUAL roll (the script
+`docs/deploy/aws/gateway/redeploy-gateway-code.sh`, path relative to the SeaWeb
+repo root — this block is copied into several repos, so resolve it there);
+Supabase edge
 functions only on an explicit `supabase functions deploy`. A push to `main`
 deploys NOTHING on the serving path. `main` is testing, `prod` is production.
 `prod` is a subset of `main` only because we maintain it — it broke for five
 days in August. Measure, never assume:
-`git fetch origin && git rev-list --left-right --count origin/main...origin/prod`
-(want `N 0`). The running box may legitimately trail `prod` when the delta is
+`git -C "<path-to-SeaWeb>" fetch origin && git -C "<path-to-SeaWeb>" rev-list --left-right
+--count origin/main...origin/prod` (want `N 0`; quote the path — it contains a space). **Name the repo explicitly** — this block is copied into
+several sibling repos, and a bare `git` here resolves against whichever one you are standing in. The running box may legitimately trail `prod` when the delta is
 provably non-serving; read the deployed SHA from
 `s3://seaweb-corpus-274755208637/code/seaweb-gateway-applied.sha`, never from a
-roll's own "health ok". Prove ancestry with `git merge-base --is-ancestor`, not
-with a path-limited diff. A roll blinds search ~2m21s — never within 5 min of a
-demo. When you report a live check, say WHICH surface it describes.
+roll's own "health ok". Prove ancestry with `git merge-base --is-ancestor`; a
+path-limited diff is necessary, never sufficient — dependencies, Dockerfiles and
+compose/env plumbing change runtime from outside `gateway workers web`. A roll
+blinds search ~2m21s (measured 2026-08; re-time it if the artifact size changes
+materially) — never within 5 min of a demo. When you report a live check, say WHICH surface it describes.
 
 **6. Never hardcode a SHA, test count, or production state in this file.** These
-files exist in ~15 worktrees at once, so an embedded fact is wrong in most of
-them immediately. Write the command that derives the fact. **Exactly two files
+files exist in many worktrees at once (list them with
+`git -C "<path-to-SeaWeb>" worktree list`), so an
+embedded fact is wrong in most of them immediately. Write the command that derives the fact. **Exactly two files
 may carry a SHA:** `SeaWeb/docs/truth.md` (invariants + the dated production
 proof; its dated top entry supersedes everything below it) and `SeaWeb/TODOS.md`
 (the work ledger: status headers, active gates). Everything else — including
