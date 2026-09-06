@@ -29,7 +29,7 @@ What stays banned, and matters more here than anywhere else:
 ## Everything else
 
 The workspace safety core still applies in full — retrieval precedence for any
-SeaWeb-facing answer, the shared-checkout staging rules, the three-surface
+SeaWeb-facing answer, the shared-checkout staging rules, the four-surface
 deploy model, and the brand line. See `../docs/AGENT-INSTRUCTIONS.md`.
 
 ## SeaWeb safety core
